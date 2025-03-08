@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mario Corriendo y Saltando</title>
+    <style>
+      /* Fondo con imagen */
+      body {
+        background-image: url("./img/IMG_4900.JPEG"); /* Ruta a tu imagen de fondo */
+        background-size: 1600px auto; /* Ajusta el tamaño de la imagen de fondo */
+        background-repeat: no-repeat;
+        background-position: absolute;
+        overflow: hidden;
+      }
+      /* Contenedor para el movimiento horizontal */
+      .mario-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        /* Aumentamos la duración a 6s para que se mueva más despacio */
+        animation: correr 6s linear infinite;
+      }
+      /* Imagen de Mario */
+      .mario {
+        width: 100px; /* Ajusta el tamaño según tu imagen */
+        height: 120px; /* Ajusta el tamaño según tu imagen */
+        background-image: url("./img/estrella-mario-bros-png.png"); /* Ruta a tu imagen de Mario */
+        background-size: contain;
+        background-repeat: no-repeat;
+        transition: transform 0.3s ease-out;
+      }
+      /* Animación de movimiento horizontal */
+      @keyframes correr {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(800px);
+        } /* Recorrer más distancia */
+      }
+      /* Clase para el salto: se desplaza 60px hacia arriba */
+      .jump {
+        transform: translateY(-60px);
+      }
+      /* Estilo para la frase que aparece con cada salto */
+      .frase {
+        position: absolute;
+        bottom: 130px; /* Se posiciona sobre Mario */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 2px black;
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+        pointer-events: none;
+      }
+      .frase.visible {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Contenedor que se mueve horizontalmente -->
+    <div class="mario-container">
+      <!-- Elemento que representa a Mario -->
+      <div class="mario" id="mario"></div>
+      <!-- Elemento para la frase -->
+      <div class="frase" id="frase"></div>
+    </div>
+
+    <script>
+      // Array con frases que se mostrarán al saltar
+      const frases = [
+        "¡Increíble!",
+        "Te Debo Una Hamburguesa!",
+        "¡Me Debes Un Café!",
+        "¡Salta, Mario!",
+        "¡Qué salto!",
+      ];
+
+      // Escucha el evento keydown para detectar cuando se presiona la barra espaciadora
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Space") {
+          const mario = document.getElementById("mario");
+          const fraseElement = document.getElementById("frase");
+          // Si Mario no está ya saltando, se añade la clase 'jump'
+          if (!mario.classList.contains("jump")) {
+            mario.classList.add("jump");
+            // Selecciona una frase aleatoria
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+            fraseElement.textContent = frase;
+            fraseElement.classList.add("visible");
+            // Eliminar la clase 'jump' después de 300ms para volver a la posición original
+            setTimeout(() => {
+              mario.classList.remove("jump");
+            }, 300);
+            // Ocultar la frase después de 900ms
+            setTimeout(() => {
+              fraseElement.classList.remove("visible");
+            }, 900);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+ 
