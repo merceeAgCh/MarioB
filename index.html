@@ -7,10 +7,11 @@
     <style>
       /* Fondo con imagen */
       body {
+        margin: 0;
         background-image: url("./img/IMG_4900.JPEG"); /* Ruta a tu imagen de fondo */
-        background-size: 1600px auto; /* Ajusta el tamaño de la imagen de fondo */
+        background-size: cover;
         background-repeat: no-repeat;
-        background-position: absolute;
+        background-position: center;
         overflow: hidden;
       }
       /* Contenedor para el movimiento horizontal */
@@ -18,26 +19,27 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        /* Aumentamos la duración a 6s para que se mueva más despacio */
+        /* Duración de la animación aumentada para un movimiento más lento */
         animation: correr 6s linear infinite;
       }
       /* Imagen de Mario */
       .mario {
-        width: 100px; /* Ajusta el tamaño según tu imagen */
-        height: 120px; /* Ajusta el tamaño según tu imagen */
+        width: 100px;
+        height: 120px;
         background-image: url("./img/estrella-mario-bros-png.png"); /* Ruta a tu imagen de Mario */
         background-size: contain;
         background-repeat: no-repeat;
         transition: transform 0.3s ease-out;
       }
-      /* Animación de movimiento horizontal */
+      /* Animación de movimiento horizontal con distancia relativa al viewport */
       @keyframes correr {
         0% {
           transform: translateX(0);
         }
         100% {
-          transform: translateX(800px);
-        } /* Recorrer más distancia */
+          /* Se desplaza hasta el borde derecho (restando el ancho de Mario) */
+          transform: translateX(calc(100vw - 100px));
+        }
       }
       /* Clase para el salto: se desplaza 60px hacia arriba */
       .jump {
@@ -46,7 +48,7 @@
       /* Estilo para la frase que aparece con cada salto */
       .frase {
         position: absolute;
-        bottom: 130px; /* Se posiciona sobre Mario */
+        bottom: 130px;
         left: 50%;
         transform: translateX(-50%);
         font-size: 18px;
@@ -59,6 +61,26 @@
       }
       .frase.visible {
         opacity: 1;
+      }
+      
+      /* Media Queries para dispositivos móviles */
+      @media (max-width: 600px) {
+        .mario {
+          width: 60px;
+          height: 80px;
+        }
+        .frase {
+          font-size: 16px;
+        }
+        /* Ajustamos la animación para que el contenedor se desplace correctamente en pantallas más pequeñas */
+        @keyframes correr {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(100vw - 60px));
+          }
+        }
       }
     </style>
   </head>
@@ -75,36 +97,44 @@
       // Array con frases que se mostrarán al saltar
       const frases = [
         "¡Increíble!",
-        "Te Debo Una Hamburguesa!",
-        "¡Me Debes Un Café!",
+        "Te Debo Hamburguesa!",
+        "¡Me Debes Café!",
         "¡Salta, Mario!",
         "¡Qué salto!",
       ];
 
-      // Escucha el evento keydown para detectar cuando se presiona la barra espaciadora
+      // Función que activa el salto y muestra una frase aleatoria
+      function triggerJump() {
+        const mario = document.getElementById("mario");
+        const fraseElement = document.getElementById("frase");
+        if (!mario.classList.contains("jump")) {
+          mario.classList.add("jump");
+          // Selecciona una frase aleatoria
+          const frase = frases[Math.floor(Math.random() * frases.length)];
+          fraseElement.textContent = frase;
+          fraseElement.classList.add("visible");
+          // Remueve la clase 'jump' después de 300ms para volver a la posición original
+          setTimeout(() => {
+            mario.classList.remove("jump");
+          }, 300);
+          // Oculta la frase después de 900ms
+          setTimeout(() => {
+            fraseElement.classList.remove("visible");
+          }, 900);
+        }
+      }
+
+      // Detecta la barra espaciadora en computadoras
       document.addEventListener("keydown", function (e) {
         if (e.code === "Space") {
-          const mario = document.getElementById("mario");
-          const fraseElement = document.getElementById("frase");
-          // Si Mario no está ya saltando, se añade la clase 'jump'
-          if (!mario.classList.contains("jump")) {
-            mario.classList.add("jump");
-            // Selecciona una frase aleatoria
-            const frase = frases[Math.floor(Math.random() * frases.length)];
-            fraseElement.textContent = frase;
-            fraseElement.classList.add("visible");
-            // Eliminar la clase 'jump' después de 300ms para volver a la posición original
-            setTimeout(() => {
-              mario.classList.remove("jump");
-            }, 300);
-            // Ocultar la frase después de 900ms
-            setTimeout(() => {
-              fraseElement.classList.remove("visible");
-            }, 900);
-          }
+          triggerJump();
         }
+      });
+
+      // Detecta el toque en dispositivos móviles
+      document.addEventListener("touchstart", function () {
+        triggerJump();
       });
     </script>
   </body>
 </html>
- 
